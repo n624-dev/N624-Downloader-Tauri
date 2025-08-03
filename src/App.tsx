@@ -36,9 +36,25 @@ function App() {
     }
   };
 
+  const handleClick_update = async () => {
+    try {
+      const result = await invoke<string>("run_update");
+      console.log("update.bat 実行結果: ", result);
+    } catch (error) {
+      alert("update.bat 実行中にエラーが発生しました: " + String(error));
+    }
+  };
+
   return (
     <div style={{ marginTop: "3%", textAlign: "center" }}>
       <h1>N624 Downloader</h1>
+      <button
+        onClick={handleClick_update}
+        className=" bg-blue-500 text-white px-4 py-2 rounded"
+        style={{ position: "fixed", top: "calc(3% + 0.67em)", height: "48px" }}
+      >
+        アップデート
+      </button>
       <input
         type="text"
         value={url}

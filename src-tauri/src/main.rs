@@ -39,9 +39,29 @@ async fn run_yt_dlp_realtime(app: AppHandle, url: String) -> Result<(), String> 
     }
 }
 
+#[tauri::command]
+fn run_update() -> Result<String, String> {
+    // 実行するバッチファイルのパス（相対パス or 絶対パス）
+    let bat_path = "update.bat";
+
+    // コマンドを実行
+    let output = Command::new("cmd")
+        .args(&["/C", bat_path])
+        .output()
+        .map_err(|e| e.to_string())?;
+
+    // 実行結果を文字列で返す（必要に応じて変更）
+    let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+    Ok(stdout)
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![run_yt_dlp_realtime])
-        .run(tauri::generate_context!())
-        .expect("tauri 起動失敗");
+    .invoke_handler(tauri::generate_handler![
+        run_yt_dlp_realtime, // 既存のコマンド
+        run_update           // 新しく追加するコマンド
+    ])
+    .run(tauri::generate_context!())
+    .expect("tauri 起動失敗");
+
 }
